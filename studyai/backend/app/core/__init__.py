@@ -1,0 +1,1 @@
+"""Core — konfiguraatio, logging, poikkeukset ja riippuvuuksien injektointi."""

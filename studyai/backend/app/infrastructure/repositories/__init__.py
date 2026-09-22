@@ -1,0 +1,1 @@
+"""Infrastructure — repositoriototeutukset (domain-porttien toteutus)."""

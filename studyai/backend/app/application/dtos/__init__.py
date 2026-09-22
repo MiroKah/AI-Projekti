@@ -1,0 +1,1 @@
+"""Application DTO:t — tiedonsiirto-oliot kerrosten välillä."""

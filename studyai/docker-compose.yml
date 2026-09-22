@@ -1,0 +1,87 @@
+# =============================================================================
+# StudyAI — Docker Compose (kehitysympäristö)
+# Palvelut: PostgreSQL + pgvector, FastAPI-backend, Next.js-frontend
+# =============================================================================
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL + pgvector -tietokanta
+  # ---------------------------------------------------------------------------
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: studyai_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-studyai}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-studyai}
+      POSTGRES_DB: ${POSTGRES_DB:-studyai}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - studyai_pgdata:/var/lib/postgresql/data
+      # Ajetaan automaattisesti vain tyhjälle tietokannalle ensimmäisellä käynnistyksellä
+      - ./db/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-studyai} -d ${POSTGRES_DB:-studyai}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - studyai_net
+
+  # ---------------------------------------------------------------------------
+  # FastAPI-backend
+  # ---------------------------------------------------------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: studyai_backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      # Ylikirjoitetaan konttiympäristön osoitteilla (docker network)
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-studyai}:${POSTGRES_PASSWORD:-studyai}@db:5432/${POSTGRES_DB:-studyai}
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      # Hot-reload kehityksessä
+      - ./backend:/app
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - studyai_net
+
+  # ---------------------------------------------------------------------------
+  # Next.js-frontend
+  # ---------------------------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: studyai_frontend
+    restart: unless-stopped
+    env_file:
+      - ./frontend/.env.local
+    environment:
+      # Palvelinpuolen kutsuille Docker-verkossa
+      BACKEND_INTERNAL_URL: http://backend:8000
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - backend
+    networks:
+      - studyai_net
+
+volumes:
+  studyai_pgdata:
+    driver: local
+
+networks:
+  studyai_net:
+    driver: bridge

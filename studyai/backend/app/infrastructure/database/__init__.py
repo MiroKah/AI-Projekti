@@ -1,0 +1,1 @@
+"""Infrastructure — tietokantayhteys, istunnot ja ORM-mallit."""

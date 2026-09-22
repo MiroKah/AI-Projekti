@@ -1,0 +1,1 @@
+"""Infrastructure — ulkoiset palvelutoteutukset (OpenAI, PDF, chunkkaus)."""

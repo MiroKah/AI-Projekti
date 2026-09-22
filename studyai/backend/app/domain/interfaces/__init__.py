@@ -1,0 +1,1 @@
+"""Domain-portit (rajapinnat) — infrastruktuuri toteuttaa nämä."""

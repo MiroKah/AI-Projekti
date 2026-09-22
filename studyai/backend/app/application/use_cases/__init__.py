@@ -1,0 +1,1 @@
+"""Käyttötapaukset (use cases) — sovelluksen orkestrointilogiikka."""
