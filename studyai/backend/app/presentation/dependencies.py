@@ -4,11 +4,11 @@
 # =============================================================================
 from __future__ import annotations
 
-from collections.abc import AsyncIterator
-
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.application.use_cases.chat_with_document import ChatWithDocumentUseCase
+from app.application.use_cases.upload_document import UploadDocumentUseCase
 from app.core.config import settings
 from app.domain.interfaces.repositories import (
     ChatRepository,
@@ -71,4 +71,40 @@ async def get_text_chunker() -> TextChunker:
     return SimpleTextChunker(
         chunk_size=settings.CHUNK_SIZE,
         overlap=settings.CHUNK_OVERLAP,
+    )
+
+
+# --- Use case:t ---
+async def get_upload_document_use_case(
+    document_repository: DocumentRepository = Depends(get_document_repository),
+    chunk_repository: ChunkRepository = Depends(get_chunk_repository),
+    pdf_service: PDFService = Depends(get_pdf_service),
+    text_chunker: TextChunker = Depends(get_text_chunker),
+    embedding_service: EmbeddingService = Depends(get_embedding_service),
+) -> UploadDocumentUseCase:
+    """Tarjoaa dokumentin lataus- ja indeksointi-use casen (RAG-putki)."""
+    return UploadDocumentUseCase(
+        document_repository=document_repository,
+        chunk_repository=chunk_repository,
+        pdf_service=pdf_service,
+        text_chunker=text_chunker,
+        embedding_service=embedding_service,
+    )
+
+
+async def get_chat_with_document_use_case(
+    document_repository: DocumentRepository = Depends(get_document_repository),
+    chunk_repository: ChunkRepository = Depends(get_chunk_repository),
+    chat_repository: ChatRepository = Depends(get_chat_repository),
+    embedding_service: EmbeddingService = Depends(get_embedding_service),
+    llm_service: LLMService = Depends(get_llm_service),
+) -> ChatWithDocumentUseCase:
+    """Tarjoaa keskustelu-use casen (RAG-kysely: embedding → haku → konteksti → LLM)."""
+    return ChatWithDocumentUseCase(
+        document_repository=document_repository,
+        chunk_repository=chunk_repository,
+        chat_repository=chat_repository,
+        embedding_service=embedding_service,
+        llm_service=llm_service,
+        retrieval_top_k=settings.RETRIEVAL_TOP_K,
     )

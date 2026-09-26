@@ -150,12 +150,13 @@ npm run dev
 
 | Metodi | Polku                          | Kuvaus                        |
 |--------|--------------------------------|-------------------------------|
-| POST   | `/api/v1/documents`            | Lataa PDF                     |
-| GET    | `/api/v1/documents`            | Listaa dokumentit             |
-| GET    | `/api/v1/documents/{id}`       | Hae dokumentti                |
-| DELETE | `/api/v1/documents/{id}`       | Poista dokumentti             |
-| POST   | `/api/v1/chat`                 | Kysy dokumentilta (RAG)       |
-| GET    | `/api/v1/health`               | Terveystarkistus              |
+| POST   | `/api/documents`               | Lataa PDF                     |
+| GET    | `/api/documents`               | Listaa dokumentit             |
+| GET    | `/api/documents/{id}`          | Hae dokumentti                |
+| DELETE | `/api/documents/{id}`          | Poista dokumentti             |
+| POST   | `/api/index-document`          | Indeksoi PDF (RAG: chunkkaus + embeddingit) |
+| POST   | `/api/chat`                    | Kysy dokumentilta (RAG)       |
+| GET    | `/api/health`                  | Terveystarkistus              |
 
 ---
 

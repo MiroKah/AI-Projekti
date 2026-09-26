@@ -15,7 +15,7 @@ const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
 
 /** API-polun etuliite. */
-const API_PREFIX = "/api/v1";
+const API_PREFIX = "/api";
 
 /**
  * Geneerinen fetch-kääre, joka heittää virheen epäonnistuneesta vastauksesta.

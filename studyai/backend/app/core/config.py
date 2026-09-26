@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     APP_NAME: str = "StudyAI"
     APP_ENV: str = "development"
     DEBUG: bool = True
-    API_V1_PREFIX: str = "/api/v1"
+    API_PREFIX: str = "/api"
 
     # --- CORS: pilkkueroteltu lista sallituista origenista ---
     CORS_ORIGINS: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
@@ -40,7 +40,7 @@ class Settings(BaseSettings):
 
     # --- RAG-parametrit ---
     CHUNK_SIZE: int = 1000
-    CHUNK_OVERLAP: int = 150
+    CHUNK_OVERLAP: int = 200
     RETRIEVAL_TOP_K: int = 5
 
     # --- Tiedostojen lataus ---

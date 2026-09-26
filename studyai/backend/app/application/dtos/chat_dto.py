@@ -21,7 +21,7 @@ class SourceDTO(BaseModel):
     score: float | None = None
 
     @classmethod
-    def from_entity(cls, source: SourceReference) -> "SourceDTO":
+    def from_entity(cls, source: SourceReference) -> SourceDTO:
         """Muunna domain-lähde DTO:ksi."""
         return cls(
             chunk_id=source.chunk_id,
@@ -43,7 +43,7 @@ class ChatMessageDTO(BaseModel):
     created_at: datetime | None = None
 
     @classmethod
-    def from_entity(cls, message: ChatMessage) -> "ChatMessageDTO":
+    def from_entity(cls, message: ChatMessage) -> ChatMessageDTO:
         """Muunna domain-viesti DTO:ksi."""
         return cls(
             id=message.id,
@@ -59,7 +59,8 @@ class ChatRequestDTO(BaseModel):
     """Sisääntuleva chat-pyyntö."""
 
     question: str = Field(min_length=1, max_length=4000)
-    document_id: UUID | None = None
+    # Spec: pyynnössä on aina kohdedokumentti, jonka sisällöstä keskustellaan
+    document_id: UUID
     session_id: UUID | None = None
 
 

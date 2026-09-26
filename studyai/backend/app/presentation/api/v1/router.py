@@ -6,10 +6,11 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
-from app.presentation.api.v1.routes import chat, documents, health
+from app.presentation.api.v1.routes import chat, documents, health, index
 
 api_router = APIRouter()
 
 api_router.include_router(health.router, tags=["health"])
 api_router.include_router(documents.router, prefix="/documents", tags=["documents"])
 api_router.include_router(chat.router, prefix="/chat", tags=["chat"])
+api_router.include_router(index.router, tags=["indexing"])

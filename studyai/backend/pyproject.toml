@@ -19,6 +19,20 @@ src = ["app"]
 select = ["E", "F", "I", "UP", "B"]
 ignore = ["E501"]
 
+[tool.ruff.lint.flake8-bugbear]
+# FastAPI-riippuvuudet (Depends/File/...) ovat oletusarvoja eivätkä suorita
+# todellista työtä oletuksen arvolla → sallitaan argumenttioletuksissa.
+extend-immutable-calls = [
+    "fastapi.Depends",
+    "fastapi.File",
+    "fastapi.Form",
+    "fastapi.Query",
+    "fastapi.Path",
+    "fastapi.Header",
+    "fastapi.Cookie",
+    "fastapi.Body",
+]
+
 [tool.mypy]
 python_version = "3.12"
 strict = true
@@ -27,6 +41,7 @@ plugins = ["pydantic.mypy"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 testpaths = ["tests"]
 
 [build-system]

@@ -31,10 +31,15 @@ AsyncSessionLocal: async_sessionmaker[AsyncSession] = async_sessionmaker(
 
 
 async def get_session() -> AsyncIterator[AsyncSession]:
-    """FastAPI-riippuvuus: tarjoaa ja sulkee tietokantayhteyden per pyyntö."""
+    """FastAPI-riippuvuus: tarjoaa ja sulkee tietokantayhteyden per pyyntö.
+
+    Committaa istunnon lopuksi, jos reitti suoritettiin onnistuneesti, ja
+    peruuttaa (rollback) muutokset, jos käsittelyssä nostettiin poikkeus.
+    """
     async with AsyncSessionLocal() as session:
         try:
             yield session
+            await session.commit()
         except Exception:
             await session.rollback()
             raise

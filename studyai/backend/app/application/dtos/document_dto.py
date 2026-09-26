@@ -26,7 +26,7 @@ class DocumentDTO(BaseModel):
     updated_at: datetime | None = None
 
     @classmethod
-    def from_entity(cls, document: Document) -> "DocumentDTO":
+    def from_entity(cls, document: Document) -> DocumentDTO:
         """Muunna domain-entiteetti DTO:ksi."""
         return cls(
             id=document.id,

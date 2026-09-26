@@ -55,7 +55,7 @@ export interface ChatMessage {
 /** Chat-pyynnön runko. */
 export interface ChatRequest {
   question: string;
-  document_id?: string | null;
+  document_id: string;
   session_id?: string | null;
 }
 
